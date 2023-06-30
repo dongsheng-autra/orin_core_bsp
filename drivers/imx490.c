@@ -354,8 +354,6 @@ static int imx490_start_streaming(struct tegracam_device *tc_dev)
 
 	dev_info(dev, "imx490_start_streaming.\n");
 
-	return 0;
-
 	/* enable serdes streaming */
 	err = gmsl_max9295_setup_streaming(priv->ser_dev);
 	if (err)
@@ -384,8 +382,6 @@ static int imx490_stop_streaming(struct tegracam_device *tc_dev)
 	struct imx490 *priv = (struct imx490 *)tegracam_get_privdata(tc_dev);
 
 	dev_info(dev, "%s:\n", __func__);
-
-	return 0;
 
 	/* disable serdes streaming */
 	gmsl_max9296_stop_streaming(priv->dser_dev, dev);
