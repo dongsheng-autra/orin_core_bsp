@@ -50,6 +50,7 @@
 
 #define MAX9296_PWDN_PHYS_ADDR 0x332
 #define MAX9296_PHY1_CLK_ADDR 0x320
+#define MAX9296_PHY2_CLK_ADDR 0x323
 #define MAX9296_CTRL0_ADDR 0x10
 
 /* data defines */
@@ -66,7 +67,8 @@
 #define MAX9296_ALLPHYS_NOSTDBY 0xF0
 #define MAX9296_ST_ID_SEL_INVALID 0xF
 
-#define MAX9296_PHY1_CLK 0x2C
+#define MAX9296_PHY1_CLK 0x2F
+#define MAX9296_PHY2_CLK MAX9296_PHY1_CLK
 
 #define MAX9296_RESET_ALL 0x80
 
@@ -772,6 +774,8 @@ int gmsl_max9296_setup_streaming(struct device *dev, struct device *s_dev)
 			MAX9296_LANE_MAP2_ADDR, priv->lane_mp2);
 		max9296_write_reg(dev,
 			MAX9296_PHY1_CLK_ADDR, MAX9296_PHY1_CLK);
+		max9296_write_reg(dev,
+			MAX9296_PHY2_CLK_ADDR, MAX9296_PHY2_CLK);
 
 		priv->lane_setup = true;
 	}
