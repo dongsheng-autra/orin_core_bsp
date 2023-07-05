@@ -5,8 +5,8 @@ if [ "`sudo lsmod | grep gmsl_max9295`" == "" ]; then
     sudo insmod gmsl_max9295.ko
 fi
 
-if [ "`sudo lsmod | grep gmsl_max9296`" == "" ]; then
-    sudo insmod gmsl_max9296.ko
+if [ "`sudo lsmod | grep gmsl_max96712`" == "" ]; then
+    sudo insmod gmsl_max96712.ko
 fi
 
 if [ "`sudo lsmod | grep imx490`" == "" ]; then

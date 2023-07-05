@@ -4,7 +4,7 @@ BUILD_DIR ?= $(shell pwd)
 ARCH ?= arm64
 CROSS_COMPILE ?= aarch64-linux-gnu-
 
-obj-m := imx490.o gmsl_max9295.o gmsl_max9296.o
+obj-m := imx490.o gmsl_max9295.o gmsl_max96712.o
 
 KERNEL_SRC_DIR ?= /work/nvidia/source/Linux_for_Tegra/sources/kernel/kernel-5.10
 KERNEL_OUT_DIR ?= /work/nvidia/source/Linux_for_Tegra/sources/kernel_out

@@ -13,7 +13,7 @@
 #include <media/tegracam_core.h>
 
 #include "gmsl_link_priv.h"
-#include "gmsl_max9296.h"
+#include "gmsl_max96712.h"
 #include "gmsl_max9295.h"
 
 #define IMX490_MIN_GAIN         (0)
@@ -71,8 +71,11 @@ struct imx490 {
 	u32	frame_length;
 	struct camera_common_data	*s_data;
 	struct tegracam_device		*tc_dev;
-	int vdig_supply;
+	int power_supply;
 	int pwdn_gpio;
+	int sync_gpio;
+	int pwdn_gpio0;
+	int pwdn_gpio1;
 };
 
 static const struct regmap_config sensor_regmap_config = {
@@ -126,10 +129,10 @@ static int imx490_gmsl_serdes_setup(struct imx490 *priv)
 	mutex_lock(&serdes_lock__);
 
 	/* For now no separate power on required for serializer device */
-	gmsl_max9296_power_on(priv->dser_dev);
+	gmsl_max96712_power_on(priv->dser_dev);
 
 	/* setup serdes addressing and control pipeline */
-	err = gmsl_max9296_setup_link(priv->dser_dev, &priv->i2c_client->dev);
+	err = gmsl_max96712_setup_link(priv->dser_dev, &priv->i2c_client->dev);
 	if (err) {
 		dev_err(dev, "gmsl deserializer link config failed\n");
 		goto error;
@@ -141,7 +144,7 @@ static int imx490_gmsl_serdes_setup(struct imx490 *priv)
 	if (err)
 		dev_err(dev, "gmsl serializer setup failed\n");
 
-	des_err = gmsl_max9296_setup_control(priv->dser_dev, &priv->i2c_client->dev);
+	des_err = gmsl_max96712_setup_control(priv->dser_dev, &priv->i2c_client->dev);
 	if (des_err) {
 		dev_err(dev, "gmsl deserializer setup failed\n");
 		/* overwrite err only if deser setup also failed */
@@ -159,9 +162,9 @@ static void imx490_gmsl_serdes_reset(struct imx490 *priv)
 
 	/* reset serdes addressing and control pipeline */
 	gmsl_max9295_reset_control(priv->ser_dev);
-	gmsl_max9296_reset_control(priv->dser_dev, &priv->i2c_client->dev);
+	gmsl_max96712_reset_control(priv->dser_dev, &priv->i2c_client->dev);
 
-	gmsl_max9296_power_off(priv->dser_dev);
+	gmsl_max96712_power_off(priv->dser_dev);
 
 	mutex_unlock(&serdes_lock__);
 }
@@ -358,10 +361,10 @@ static int imx490_start_streaming(struct tegracam_device *tc_dev)
 	err = gmsl_max9295_setup_streaming(priv->ser_dev);
 	if (err)
 		goto exit;
-	err = gmsl_max9296_setup_streaming(priv->dser_dev, dev);
+	err = gmsl_max96712_setup_streaming(priv->dser_dev, dev);
 	if (err)
 		goto exit;
-	err = gmsl_max9296_start_streaming(priv->dser_dev, dev);
+	err = gmsl_max96712_start_streaming(priv->dser_dev, dev);
 	if (err)
 		goto exit;
 
@@ -384,7 +387,7 @@ static int imx490_stop_streaming(struct tegracam_device *tc_dev)
 	dev_info(dev, "%s:\n", __func__);
 
 	/* disable serdes streaming */
-	gmsl_max9296_stop_streaming(priv->dser_dev, dev);
+	gmsl_max96712_stop_streaming(priv->dser_dev, dev);
 
 	return 0;
 }
@@ -482,13 +485,14 @@ static int imx490_board_setup(struct imx490 *priv)
 		goto error;
 	}
 
-	priv->vdig_supply = of_get_named_gpio(node, "vdig-supply", 0);
-	if (priv->vdig_supply < 0) {
-		dev_err(dev, "vdig-supply not found %d\n", err);
+	priv->power_supply = of_get_named_gpio(node, "power-supply", 0);
+	if (priv->power_supply < 0) {
+		dev_err(dev, "power-supply not found %d\n", err);
 		err = -EINVAL;
 		goto error;
 	}
-	gpio_set_value(priv->vdig_supply, 0);
+	gpio_set_value(priv->power_supply, 0);
+	dev_info(dev, "power-supply setup\n");
 	msleep(20);
 
 	priv->pwdn_gpio = of_get_named_gpio(node, "pwdn-gpio", 0);
@@ -498,8 +502,38 @@ static int imx490_board_setup(struct imx490 *priv)
 		goto error;
 	}
 	gpio_set_value(priv->pwdn_gpio, 1);
+	dev_info(dev, "pwdn-gpio setup\n");
 	msleep(20);
 
+	priv->sync_gpio = of_get_named_gpio(node, "sync-gpio", 0);
+	if (priv->sync_gpio < 0) {
+		dev_err(dev, "sync-gpio not found %d\n", err);
+		err = -EINVAL;
+		goto error;
+	}
+	gpio_set_value(priv->sync_gpio, 1);
+	dev_info(dev, "sync-gpio setup\n");
+	msleep(500);
+
+#if 0
+	priv->pwdn_gpio0 = of_get_named_gpio(node, "pwdn-gpio0", 0);
+	if (priv->pwdn_gpio0 < 0) {
+		dev_err(dev, "pwdn-gpio0 not found %d\n", err);
+		err = -EINVAL;
+		goto error;
+	}
+	gpio_set_value(priv->pwdn_gpio0, 1);
+	msleep(20);
+
+	priv->pwdn_gpio1 = of_get_named_gpio(node, "pwdn-gpio1", 0);
+	if (priv->pwdn_gpio1 < 0) {
+		dev_err(dev, "pwdn-gpio1 not found %d\n", err);
+		err = -EINVAL;
+		goto error;
+	}
+	gpio_set_value(priv->pwdn_gpio1, 1);
+	msleep(20);
+#endif
 	dser_i2c = of_find_i2c_device_by_node(dser_node);
 	of_node_put(dser_node);
 
@@ -669,6 +703,8 @@ static int imx490_probe(struct i2c_client *client,
 
 	tegracam_set_privdata(tc_dev, (void *)priv);
 
+	imx490_power_on(tc_dev->s_data);
+
 	err = imx490_board_setup(priv);
 	if (err) {
 		tegracam_device_unregister(tc_dev);
@@ -684,26 +720,12 @@ static int imx490_probe(struct i2c_client *client,
 	}
 
 	/* Register sensor to deserializer dev */
-	err = gmsl_max9296_sdev_register(priv->dser_dev, &priv->g_ctx);
+	err = gmsl_max96712_sdev_register(priv->dser_dev, &priv->g_ctx);
 	if (err) {
 		dev_err(&client->dev, "gmsl deserializer register failed\n");
 		return err;
 	}
 
-	/*
-	 * gmsl serdes setup
-	 *
-	 * Sensor power on/off should be the right place for serdes
-	 * setup/reset. But the problem is, the total required delay
-	 * in serdes setup/reset exceeds the frame wait timeout, looks to
-	 * be related to multiple channel open and close sequence
-	 * issue (#BUG 200477330).
-	 * Once this bug is fixed, these may be moved to power on/off.
-	 * The delays in serdes is as per guidelines and can't be reduced,
-	 * so it is placed in probe/remove, though for that, deserializer
-	 * would be powered on always post boot, until 1.2v is supplied
-	 * to deserializer from CVB.
-	 */
 	err = imx490_gmsl_serdes_setup(priv);
 	if (err) {
 		dev_err(&client->dev,

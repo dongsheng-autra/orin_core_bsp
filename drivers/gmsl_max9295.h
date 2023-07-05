@@ -44,7 +44,7 @@
  *
  * Before the client calls this function it must ensure that
  * the deserializer device is in link_ex exclusive link mode
- * by calling the deserializer driver's max9296_setup_link() function.
+ * by calling the deserializer driver's max96712_setup_link() function.
  *
  * @param  [in]  dev            The serializer device handle.
  *
