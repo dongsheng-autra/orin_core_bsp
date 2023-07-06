@@ -1,13 +1,11 @@
+/*
+ * Copyright (c) 2023 Autra.Tech.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-#include <linux/slab.h>
-#include <linux/uaccess.h>
-#include <linux/gpio.h>
-#include <linux/module.h>
-
-#include <linux/seq_file.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
-#include <linux/of_gpio.h>
 
 #include <media/camera_common.h>
 #include <media/tegracam_core.h>
@@ -44,16 +42,8 @@ struct gmsl2_sensor {
 	struct i2c_client	*i2c_client;
 	const struct i2c_device_id *id;
 	struct v4l2_subdev	*subdev;
-	struct device		*ser_dev;
-	struct device		*dser_dev;
-	u32	frame_length;
 	struct camera_common_data	*s_data;
 	struct tegracam_device		*tc_dev;
-	int power_supply;
-	int pwdn_gpio;
-	int sync_gpio;
-	int pwdn_gpio0;
-	int pwdn_gpio1;
 };
 
 static const struct regmap_config sensor_regmap_config = {
@@ -62,17 +52,17 @@ static const struct regmap_config sensor_regmap_config = {
 	.cache_type = REGCACHE_RBTREE,
 };
 
-static int test_mode;
-module_param(test_mode, int, 0644);
-
 static inline int gmsl2_sensor_read_reg(struct camera_common_data *s_data,
 				u16 addr, u8 *val)
 {
+	struct device *dev = s_data->dev;
 	int err = 0;
 	u32 reg_val = 0;
 
 	err = regmap_read(s_data->regmap, addr, &reg_val);
 	*val = reg_val & 0xFF;
+
+	dev_info(dev, "%s\n", __func__);
 
 	return err;
 }
@@ -80,18 +70,18 @@ static inline int gmsl2_sensor_read_reg(struct camera_common_data *s_data,
 static int gmsl2_sensor_write_reg(struct camera_common_data *s_data,
 				u16 addr, u8 val)
 {
-	int err;
 	struct device *dev = s_data->dev;
+	int err;
 
 	err = regmap_write(s_data->regmap, addr, val);
 	if (err)
 		dev_err(dev, "%s:i2c write failed, 0x%x = %x\n",
 			__func__, addr, val);
 
+	dev_info(dev, "%s\n", __func__);
+
 	return err;
 }
-
-static struct mutex serdes_lock__;
 
 static int gmsl2_sensor_power_on(struct camera_common_data *s_data)
 {
@@ -100,7 +90,8 @@ static int gmsl2_sensor_power_on(struct camera_common_data *s_data)
 	struct camera_common_pdata *pdata = s_data->pdata;
 	struct device *dev = s_data->dev;
 
-	dev_info(dev, "%s: power on\n", __func__);
+	dev_info(dev, "%s\n", __func__);
+
 	if (pdata && pdata->power_on) {
 		err = pdata->power_on(pw);
 		if (err)
@@ -122,7 +113,7 @@ static int gmsl2_sensor_power_off(struct camera_common_data *s_data)
 	struct camera_common_pdata *pdata = s_data->pdata;
 	struct device *dev = s_data->dev;
 
-	dev_info(dev, "%s:\n", __func__);
+	dev_info(dev, "%s\n", __func__);
 
 	if (pdata && pdata->power_off) {
 		err = pdata->power_off(pw);
@@ -150,6 +141,8 @@ static int gmsl2_sensor_power_get(struct tegracam_device *tc_dev)
 	struct clk *parent;
 	int err = 0;
 
+	dev_info(dev, "%s\n", __func__);
+
 	mclk_name = pdata->mclk_name ?
 		    pdata->mclk_name : "cam_mclk1";
 	pw->mclk = devm_clk_get(dev, mclk_name);
@@ -175,8 +168,11 @@ static int gmsl2_sensor_power_get(struct tegracam_device *tc_dev)
 
 static int gmsl2_sensor_power_put(struct tegracam_device *tc_dev)
 {
+	struct device *dev = tc_dev->dev;
 	struct camera_common_data *s_data = tc_dev->s_data;
 	struct camera_common_power_rail *pw = s_data->power;
+
+	dev_info(dev, "%s\n", __func__);
 
 	if (unlikely(!pw))
 		return -EFAULT;
@@ -188,7 +184,7 @@ static int gmsl2_sensor_set_group_hold(struct tegracam_device *tc_dev, bool val)
 {
 	struct device *dev = tc_dev->dev;
 
-	dev_info(dev, "%s\n",  __func__);
+	dev_info(dev, "[%s]: Setting group hold is not avilable yet.\n",  __func__);
 
 	return 0;
 }
@@ -255,6 +251,8 @@ static struct camera_common_pdata *gmsl2_sensor_parse_dt(struct tegracam_device 
 	if (err)
 		dev_err(dev, "mclk not in DT\n");
 
+	dev_info(dev, "%s\n", __func__);
+
 	return board_priv_pdata;
 }
 
@@ -272,7 +270,7 @@ static int gmsl2_sensor_start_streaming(struct tegracam_device *tc_dev)
 {
 	struct device *dev = tc_dev->dev;
 
-	dev_info(dev, "sensors_start_streaming.\n");
+	dev_info(dev, "%s\n", __func__);
 
 	return 0;
 }
@@ -281,7 +279,7 @@ static int gmsl2_sensor_stop_streaming(struct tegracam_device *tc_dev)
 {
 	struct device *dev = tc_dev->dev;
 
-	dev_info(dev, "%s:\n", __func__);
+	dev_info(dev, "%s\n", __func__);
 
 	return 0;
 }
@@ -305,7 +303,7 @@ static int gmsl2_sensor_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
 {
 	struct i2c_client *client = v4l2_get_subdevdata(sd);
 
-	dev_dbg(&client->dev, "%s:\n", __func__);
+	dev_dbg(&client->dev, "%s\n", __func__);
 
 	return 0;
 }
@@ -374,6 +372,8 @@ static int gmsl2_sensor_remove(struct i2c_client *client)
 	struct camera_common_data *s_data = to_camera_common_data(&client->dev);
 	struct gmsl2_sensor *priv = (struct gmsl2_sensor *)s_data->priv;
 
+	dev_info(&client->dev, "%s\n", __func__);
+
 	tegracam_v4l2subdev_unregister(priv->tc_dev);
 	tegracam_device_unregister(priv->tc_dev);
 
@@ -400,15 +400,11 @@ static struct i2c_driver gmsl2_sensor_i2c_driver = {
 
 static int __init gmsl2_sensor_init(void)
 {
-	mutex_init(&serdes_lock__);
-
 	return i2c_add_driver(&gmsl2_sensor_i2c_driver);
 }
 
 static void __exit gmsl2_sensor_exit(void)
 {
-	mutex_destroy(&serdes_lock__);
-
 	i2c_del_driver(&gmsl2_sensor_i2c_driver);
 }
 

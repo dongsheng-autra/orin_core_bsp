@@ -215,11 +215,6 @@
 				mclk = "extperiph1";
 				nvidia,gmsl-ser-device = <&gmsl_ser_a>;
 				nvidia,gmsl-dser-device = <&gmsl_dser>;
-				power-supply = <&tegra_main_gpio 0xa7 0x00>; /* AC.07 */
-				pwdn-gpio = <&tegra_main_gpio 0x3e 0x00>; /* PH.06 */
-				sync-gpio = <&tegra_main_gpio 0x3b 0x00>; /* PH.03 */
-				pwdn-gpio0 = <&tegra_main_gpio 0xa0 0x00>; /* AC.00 */
-				pwdn-gpio1 = <&tegra_main_gpio 0xa1 0x00>; /* AC.01 */
 
 				compatible = "sensing,gmsl2_sensor";
 
@@ -318,11 +313,6 @@
 				mclk = "extperiph1";
 				nvidia,gmsl-ser-device = <&gmsl_ser_b>;
 				nvidia,gmsl-dser-device = <&gmsl_dser>;
-				power-supply = <&tegra_main_gpio 0xa7 0x00>; /* AC.07 */
-				pwdn-gpio = <&tegra_main_gpio 0x3e 0x00>; /* PH.06 */
-				sync-gpio = <&tegra_main_gpio 0x3b 0x00>; /* PH.03 */
-				pwdn-gpio0 = <&tegra_main_gpio 0xa0 0x00>; /* AC.00 */
-				pwdn-gpio1 = <&tegra_main_gpio 0xa1 0x00>; /* AC.01 */
 
 				compatible = "sensing,gmsl2_sensor";
 
