@@ -489,6 +489,7 @@ static int imx490_board_setup(struct imx490 *priv)
 		goto error;
 	}
 
+#if 0
 	priv->power_supply = of_get_named_gpio(node, "power-supply", 0);
 	if (priv->power_supply < 0) {
 		dev_err(dev, "power-supply not found %d\n", err);
@@ -519,7 +520,6 @@ static int imx490_board_setup(struct imx490 *priv)
 	dev_info(dev, "sync-gpio setup\n");
 	msleep(500);
 
-#if 0
 	priv->pwdn_gpio0 = of_get_named_gpio(node, "pwdn-gpio0", 0);
 	if (priv->pwdn_gpio0 < 0) {
 		dev_err(dev, "pwdn-gpio0 not found %d\n", err);
@@ -538,6 +538,7 @@ static int imx490_board_setup(struct imx490 *priv)
 	gpio_set_value(priv->pwdn_gpio1, 1);
 	msleep(20);
 #endif
+
 	dser_i2c = of_find_i2c_device_by_node(dser_node);
 	of_node_put(dser_node);
 
