@@ -17,28 +17,6 @@ struct max96712 {
 	struct mutex lock;
 };
 
-static int max96712_write_reg(struct device *dev,
-	u16 addr, u8 val)
-{
-	struct max96712 *priv;
-	int err;
-
-	priv = dev_get_drvdata(dev);
-
-	err = regmap_write(priv->regmap, addr, val);
-	if (err)
-		dev_err(dev, "%s:i2c write failed, 0x%x = %x\n",
-		__func__, addr, val);
-
-	dev_info(dev, "%s:i2c-w, 0x%x = %x\n",
-		__func__, addr, val);
-
-	/* delay before next i2c command as required for SERDES link */
-	usleep_range(100, 110);
-
-	return err;
-}
-
 static int max96712_read_reg(struct device *dev,
 			u16 addr, u32 *val)
 {
@@ -54,6 +32,35 @@ static int max96712_read_reg(struct device *dev,
 
 	dev_info(dev, "%s:i2c-r, 0x%x = %x\n",
 		__func__, addr, *val);
+
+	return err;
+}
+
+static int max96712_write_reg(struct device *dev,
+	u16 addr, u8 val)
+{
+	struct max96712 *priv;
+	int err;
+	u32 read_val;
+
+	priv = dev_get_drvdata(dev);
+
+	err = regmap_write(priv->regmap, addr, val);
+	if (err)
+		dev_err(dev, "%s:i2c write failed, 0x%x = %x\n",
+		__func__, addr, val);
+
+	dev_info(dev, "%s:i2c-w, 0x%x = %x\n",
+		__func__, addr, val);
+
+	/* delay before next i2c command as required for SERDES link */
+	usleep_range(100, 110);
+
+	max96712_read_reg(dev, addr, &read_val);
+	if ((read_val & val) != val) {
+		dev_err(dev, "%s:i2c write read, 0x%x = %x\n",
+		__func__, addr, val);
+	}
 
 	return err;
 }
@@ -89,13 +96,6 @@ static int max96712_link_check(struct device *dev)
 
 	dev_info(dev, "Detected MAX96712 chipid: %02x\n", tmp);
 
-	/* IF VDD = 1.2V: Enable REG_ENABLE and REG_MNL
-	 *	CTRL0: Enable REG_ENABLE
-	 *	CTRL2: Enable REG_MNL
-	 */
-	//max96712_update_bits(dev, 0x0017, BIT(2), BIT(2));
-	//max96712_update_bits(dev, 0x0019, BIT(4), BIT(4));
-
 	/* CSI output disabled. */
 	max96712_write_reg(dev, 0x040B, 0x00);
 
@@ -103,16 +103,77 @@ static int max96712_link_check(struct device *dev)
 	max96712_write_reg(dev, 0x0006, 0xFF);
 
 	/* Link A ~ Link D Transmitter Rate: 187.5Mbps, Receiver Rate: 3Gbps */
-	max96712_write_reg(dev, 0x0010, 0x11);
-	max96712_write_reg(dev, 0x0011, 0x11);
+	max96712_write_reg(dev, 0x0010, 0x22);
+	max96712_write_reg(dev, 0x0011, 0x22);
 
-	/* Link A ~ Link D One-Shot Reset */
-	//max96712_write_reg(dev, 0x0018, 0x0F);
-	//max96712_read_reg(dev, 0x0018, &tmp);
-	//max96712_write_reg(dev, 0x0006, 0xFF);
+	max96712_write_reg(dev, 0x00F0, 0x62);
+	max96712_write_reg(dev, 0x00F1, 0xEA);
+	max96712_write_reg(dev, 0x00F4, 0x0F);
+
+	max96712_write_reg(dev, 0x0106, 0x0A);
+	max96712_write_reg(dev, 0x0118, 0x0A);
+	max96712_write_reg(dev, 0x012A, 0x0A);
+	max96712_write_reg(dev, 0x013C, 0x0A);
+
+	max96712_write_reg(dev, 0x090B, 0x07);
+	max96712_write_reg(dev, 0x092D, 0x15);
+	max96712_write_reg(dev, 0x090D, 0x1E);
+	max96712_write_reg(dev, 0x090E, 0x1E);
+	max96712_write_reg(dev, 0x090F, 0x00);
+	max96712_write_reg(dev, 0x0910, 0x00);
+	max96712_write_reg(dev, 0x0911, 0x01);
+	max96712_write_reg(dev, 0x0912, 0x01);
+
+	max96712_write_reg(dev, 0x094B, 0x07);
+	max96712_write_reg(dev, 0x096D, 0x15);
+	max96712_write_reg(dev, 0x094D, 0x1E);
+	max96712_write_reg(dev, 0x094E, 0x5E);
+	max96712_write_reg(dev, 0x094F, 0x00);
+	max96712_write_reg(dev, 0x0950, 0x40);
+	max96712_write_reg(dev, 0x0951, 0x01);
+	max96712_write_reg(dev, 0x0952, 0x41);
+
+	max96712_write_reg(dev, 0x098B, 0x07);
+	max96712_write_reg(dev, 0x09AD, 0x15);
+	max96712_write_reg(dev, 0x098D, 0x1E);
+	max96712_write_reg(dev, 0x098E, 0x9E);
+	max96712_write_reg(dev, 0x098F, 0x00);
+	max96712_write_reg(dev, 0x0990, 0x80);
+	max96712_write_reg(dev, 0x0991, 0x01);
+	max96712_write_reg(dev, 0x0992, 0x81);
+
+	max96712_write_reg(dev, 0x09CB, 0x07);
+	max96712_write_reg(dev, 0x09ED, 0x15);
+	max96712_write_reg(dev, 0x09CD, 0x1E);
+	max96712_write_reg(dev, 0x09CE, 0xDE);
+	max96712_write_reg(dev, 0x09CF, 0x00);
+	max96712_write_reg(dev, 0x09D0, 0xC0);
+	max96712_write_reg(dev, 0x09D1, 0x01);
+	max96712_write_reg(dev, 0x09D2, 0xC1);
+
+	msleep(20);
+
+	max96712_write_reg(dev, 0x08A0, 0x04);
+	max96712_write_reg(dev, 0x08A3, 0xE4);
+	max96712_write_reg(dev, 0x08A4, 0xE4);
+
+	max96712_write_reg(dev, 0x090A, 0xC0);
+	max96712_write_reg(dev, 0x094A, 0xC0);
+	max96712_write_reg(dev, 0x098A, 0xC0);
+	max96712_write_reg(dev, 0x09CA, 0xC0);
+
+	max96712_write_reg(dev, 0x08A2, 0xF0);
+
+	max96712_write_reg(dev, 0x0415, 0x2F);
+	max96712_write_reg(dev, 0x0418, 0x2F);
+	max96712_write_reg(dev, 0x041B, 0x2F);
+	max96712_write_reg(dev, 0x041E, 0x2F);
+
+	max96712_write_reg(dev, 0x0006, 0xF1);
 
 	msleep(100);
-
+	max96712_read_reg(dev, 0x001a, &tmp);
+#if 0
 	for (count = 0; count < 20; count++) {
 		max96712_read_reg(dev, 0x001a, &tmp);
 		if (tmp & BIT(3)) {
@@ -135,7 +196,7 @@ static int max96712_link_check(struct device *dev)
 		}
 		msleep(10);
 	}
-
+#endif
 	return ret;
 }
 

@@ -128,6 +128,8 @@ static int imx490_gmsl_serdes_setup(struct imx490 *priv)
 
 	mutex_lock(&serdes_lock__);
 
+	goto error;
+
 	/* For now no separate power on required for serializer device */
 	gmsl_max96712_power_on(priv->dser_dev);
 
@@ -356,6 +358,8 @@ static int imx490_start_streaming(struct tegracam_device *tc_dev)
 	int err;
 
 	dev_info(dev, "imx490_start_streaming.\n");
+
+	return 0;
 
 	/* enable serdes streaming */
 	err = gmsl_max9295_setup_streaming(priv->ser_dev);
@@ -702,8 +706,6 @@ static int imx490_probe(struct i2c_client *client,
 	priv->subdev = &tc_dev->s_data->subdev;
 
 	tegracam_set_privdata(tc_dev, (void *)priv);
-
-	imx490_power_on(tc_dev->s_data);
 
 	err = imx490_board_setup(priv);
 	if (err) {
