@@ -64,7 +64,7 @@
 			status = "okay";
 			port-index = <0>;
 			bus-width = <4>;
-			remote-endpoint = <&imx490_out0>;
+			remote-endpoint = <&sensing_sensors_out0>;
 		};
 	};
 	fragment@8 {
@@ -98,7 +98,7 @@
 			status = "okay";
 			port-index = <0>;
 			bus-width = <4>;
-			remote-endpoint = <&imx490_out1>;
+			remote-endpoint = <&sensing_sensors_out1>;
 		};
 	};
 	fragment@13 {
@@ -127,7 +127,7 @@
 		target-path = "/tegra-camera-platform/modules/module0";
 		__overlay__ {
 			status = "okay";
-			badge = "imx490_rear";
+			badge = "sensing_sensors_0";
 			position = "rear";
 			orientation = "1";
 		};
@@ -137,15 +137,15 @@
 		__overlay__ {
 			status = "okay";
 			pcl_id = "v4l2_sensor";
-			devname = "imx490 30-001b";
-			proc-device-tree = "/proc/device-tree/i2c@3180000/tca9546@70/i2c@0/imx490_a@1b";
+			devname = "sensing_sensors 30-001b";
+			proc-device-tree = "/proc/device-tree/i2c@3180000/tca9546@70/i2c@0/sensing_sensors_a@1b";
 		};
 	};
 	fragment@18 {
 		target-path = "/tegra-camera-platform/modules/module1";
 		__overlay__ {
 			status = "okay";
-			badge = "imx490_front";
+			badge = "sensing_sensors_1";
 			position = "front";
 			orientation = "1";
 		};
@@ -155,8 +155,8 @@
 		__overlay__ {
 			status = "okay";
 			pcl_id = "v4l2_sensor";
-			devname = "imx490 30-001c";
-			proc-device-tree = "/proc/device-tree/i2c@3180000/tca9546@70/i2c@0/imx490_b@1c";
+			devname = "sensing_sensors 30-001c";
+			proc-device-tree = "/proc/device-tree/i2c@3180000/tca9546@70/i2c@0/sensing_sensors_b@1c";
 		};
 	};
 
@@ -203,7 +203,7 @@
 				nvidia,gmsl-dser-device = <&gmsl_dser>;
 			};
 
-			imx490_a@1b {
+			sensing_sensors_a@1b {
 				status = "okay";
 				def-addr = <0x1a>;
 				devnode = "video0";
@@ -221,14 +221,14 @@
 				pwdn-gpio0 = <&tegra_main_gpio 0xa0 0x00>; /* AC.00 */
 				pwdn-gpio1 = <&tegra_main_gpio 0xa1 0x00>; /* AC.01 */
 
-				compatible = "sony,imx490";
+				compatible = "sensing,gmsl2_sensor";
 
 				reg = <0x1b>;
 
 				/* Physical dimensions of sensor */
 				physical_w = "15.0";
 				physical_h = "12.5";
-				sensor_model = "imx490";
+				sensor_model = "gmsl2_sensor";
 
 				/* Defines number of frames to be dropped by driver internally after applying */
 				/* sensor crop settings. Some sensors send corrupt frames after applying */
@@ -286,7 +286,7 @@
 					#size-cells = <0>;
 					port@0 {
 						reg = <0>;
-						imx490_out0: endpoint {
+						sensing_sensors_out0: endpoint {
 							vc-id = <0>;
 							port-index = <0>;
 							bus-width = <4>;
@@ -306,7 +306,7 @@
 				};
 			};
 
-			imx490_b@1c {
+			sensing_sensors_b@1c {
 				status = "okay";
 				def-addr = <0x1a>;
 				devnode = "video1";
@@ -324,14 +324,14 @@
 				pwdn-gpio0 = <&tegra_main_gpio 0xa0 0x00>; /* AC.00 */
 				pwdn-gpio1 = <&tegra_main_gpio 0xa1 0x00>; /* AC.01 */
 
-				compatible = "sony,imx490";
+				compatible = "sensing,gmsl2_sensor";
 
 				reg = <0x1c>;
 
 				/* Physical dimensions of sensor */
 				physical_w = "15.0";
 				physical_h = "12.5";
-				sensor_model = "imx490";
+				sensor_model = "gmsl2_sensor";
 
 				/* Defines number of frames to be dropped by driver internally after applying */
 				/* sensor crop settings. Some sensors send corrupt frames after applying */
@@ -389,7 +389,7 @@
 					#size-cells = <0>;
 					port@0 {
 						reg = <0>;
-						imx490_out1: endpoint {
+						sensing_sensors_out1: endpoint {
 							vc-id = <1>;
 							port-index = <0>;
 							bus-width = <4>;
