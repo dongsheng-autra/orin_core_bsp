@@ -165,7 +165,6 @@
 		target-path = "/i2c@3180000/tca9546@70";
 		__overlay__ {
 			status = "okay";
-			vcc-pullup-supply = <0x2e>;
 		};
 	};
 
@@ -177,48 +176,14 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 
-			gmsl_dser: gmsl_max96712@6b {
-				compatible = "maxim,gmsl_max96712";
-				status = "okay";
-				reg = <0x6b>;
-				csi-mode = "2x4";
-				max-src = <4>;
-			};
-			gmsl_ser_prim: gmsl_max9295_prim@40 {
-				compatible = "maxim,gmsl_max9295";
-				status = "okay";
-				reg = <0x40>;
-				is-prim-ser;
-			};
-			gmsl_ser_a: gmsl_max9295_a@60 {
-				compatible = "maxim,gmsl_max9295";
-				status = "okay";
-				reg = <0x60>;
-				nvidia,gmsl-dser-device = <&gmsl_dser>;
-			};
-			gmsl_ser_b: gmsl_max9295_b@62 {
-				compatible = "maxim,gmsl_max9295";
-				status = "okay";
-				reg = <0x62>;
-				nvidia,gmsl-dser-device = <&gmsl_dser>;
-			};
-
 			sensing_sensors_a@1b {
+				compatible = "sensing,gmsl2_sensor";
 				status = "okay";
-				def-addr = <0x1a>;
+				reg = <0x1b>;
 				devnode = "video0";
-				/* Define any required hw resources needed by driver */
-				/* ie. clocks, io pins, power sources */
-				clocks = <&bpmp 36U>,
-						<&bpmp 36U>;
+				clocks = <&bpmp 36U>, <&bpmp 36U>;
 				clock-names = "extperiph1", "pllp_grtba";
 				mclk = "extperiph1";
-				nvidia,gmsl-ser-device = <&gmsl_ser_a>;
-				nvidia,gmsl-dser-device = <&gmsl_dser>;
-
-				compatible = "sensing,gmsl2_sensor";
-
-				reg = <0x1b>;
 
 				/* Physical dimensions of sensor */
 				physical_w = "15.0";
@@ -289,34 +254,16 @@
 						};
 					};
 				};
-				gmsl-link {
-					src-csi-port = "b";
-					dst-csi-port = "a";
-					serdes-csi-link = "a";
-					csi-mode = "1x4";
-					st-vc = <0>;
-					vc-id = <0>;
-					num-lanes = <4>;
-					streams = "ued-u1", "yuv8";
-				};
 			};
 
 			sensing_sensors_b@1c {
+				compatible = "sensing,gmsl2_sensor";
 				status = "okay";
-				def-addr = <0x1a>;
+				reg = <0x1c>;
 				devnode = "video1";
-				/* Define any required hw resources needed by driver */
-				/* ie. clocks, io pins, power sources */
-				clocks = <&bpmp 36U>,
-						<&bpmp 36U>;
+				clocks = <&bpmp 36U>, <&bpmp 36U>;
 				clock-names = "extperiph1", "pllp_grtba";
 				mclk = "extperiph1";
-				nvidia,gmsl-ser-device = <&gmsl_ser_b>;
-				nvidia,gmsl-dser-device = <&gmsl_dser>;
-
-				compatible = "sensing,gmsl2_sensor";
-
-				reg = <0x1c>;
 
 				/* Physical dimensions of sensor */
 				physical_w = "15.0";
@@ -337,7 +284,7 @@
 				mode0 {
 					mclk_khz = "24000";
 					num_lanes = "4";
-					tegra_sinterface = "serial_b";
+					tegra_sinterface = "serial_a";
 					vc_id = "1";
 					discontinuous_clk = "no";
 					dpcm_enable = "false";
@@ -386,16 +333,6 @@
 							remote-endpoint = <&csi_in1>;
 						};
 					};
-				};
-				gmsl-link {
-					src-csi-port = "b";
-					dst-csi-port = "a";
-					serdes-csi-link = "b";
-					csi-mode = "1x4";
-					st-vc = <0>;
-					vc-id = <1>;
-					num-lanes = <4>;
-					streams = "ued-u1", "yuv8";
 				};
 			};
 		};
