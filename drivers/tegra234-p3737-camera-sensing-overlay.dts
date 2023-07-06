@@ -3,7 +3,7 @@
 /plugin/;
 
 / {
-	overlay-name = "Sensing Camera IMX490";
+	overlay-name = "Sensing Camera Module";
 	jetson-header-name = "Jetson AGX CSI Connector";
 	compatible = "nvidia,p3737-0000+p3701-0000", "nvidia,p3737-0000+p3701-0004", "nvidia,p3737-0000+p3701-0005";
 
