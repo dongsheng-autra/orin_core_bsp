@@ -11,9 +11,8 @@
 #include <media/tegracam_core.h>
 
 enum {
-	GMSL2_SENSOR_MODE_CROP_NFPS,
-	GMSL2_SENSOR_MODE_START_STREAM,
-	GMSL2_SENSOR_MODE_STOP_STREAM,
+	GMSL2_SENSOR_MODE_2880x1860_30FPS,
+	GMSL2_SENSOR_MODE_3840x2160_30FPS,
 };
 
 static const int gmsl2_sensor_30fps[] = {
@@ -21,7 +20,8 @@ static const int gmsl2_sensor_30fps[] = {
 };
 
 static const struct camera_common_frmfmt gmsl2_sensor_frmfmt[] = {
-	{{2880, 1860}, gmsl2_sensor_30fps, 1, 0, GMSL2_SENSOR_MODE_CROP_NFPS},
+	{{2880, 1860}, gmsl2_sensor_30fps, 1, 0, GMSL2_SENSOR_MODE_2880x1860_30FPS},
+	{{3840, 2160}, gmsl2_sensor_30fps, 1, 0, GMSL2_SENSOR_MODE_3840x2160_30FPS},
 };
 
 static const struct of_device_id gmsl2_sensor_of_match[] = {
@@ -35,7 +35,6 @@ static const u32 ctrl_cid_list[] = {
 	TEGRA_CAMERA_CID_EXPOSURE,
 	TEGRA_CAMERA_CID_EXPOSURE_SHORT,
 	TEGRA_CAMERA_CID_FRAME_RATE,
-	TEGRA_CAMERA_CID_HDR_EN,
 };
 
 struct gmsl2_sensor {
