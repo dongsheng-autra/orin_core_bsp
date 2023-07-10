@@ -1,15 +1,39 @@
 #!/bin/bash
 
-# [IMX490 & OX08B]
-echo "[sensors]: setup"
+# [IMX490 & OX08B & ISX031]
+
+function red_print() {
+    echo -e "\e[1;31m$1\e[0m"
+}
+
+function green_print() {
+    echo -e "\e[1;32m$1\e[0m"
+}
+
+camera_array=([1]=sg3-isx031-gmsl2
+              [2]=sg8-ox08bc-gmsl2
+              [3]=sg5-imx490-gmsl2)
+
+echo 1:${camera_array[1]}
+echo 2:${camera_array[2]}
+echo 3:${camera_array[3]}
+
+green_print "Press select your camera type:"
+read key
 
 i2ctransfer -f -y 30 w3@0x6b 0x04 0x0b 0x00
 i2ctransfer -f -y 30 w3@0x6b 0x00 0x06 0xff
 
 sleep 0.1
 
-i2ctransfer -f -y 30 w3@0x6b 0x00 0x10 0x22
-i2ctransfer -f -y 30 w3@0x6b 0x00 0x11 0x22
+# [ISX031] 3Gbps [IMX490 & OX08B] 6Gbps
+if [ ${camera_array[key]} == sg3-isx031-gmsl2 ]; then
+    i2ctransfer -f -y 30 w3@0x6b 0x00 0x10 0x11
+    i2ctransfer -f -y 30 w3@0x6b 0x00 0x11 0x11
+else
+    i2ctransfer -f -y 30 w3@0x6b 0x00 0x10 0x22
+    i2ctransfer -f -y 30 w3@0x6b 0x00 0x11 0x22
+fi
 
 sleep 0.1
 
@@ -73,8 +97,8 @@ i2ctransfer -f -y 30 w3@0x6b 0x04 0x1E 0x2F
 
 sleep 0.1
 
-# 9295-A
-echo "[sensors]: 9295a"
+# 9295-A/96717-A
+echo "[sensors]: serializer-a"
 i2ctransfer -f -y 30 w3@0x6b 0x00 0x06 0xF1
 
 sleep 1
@@ -83,17 +107,17 @@ i2ctransfer -f -y 30 w3@0x40 0x02 0xBE 0x10
 sleep 1
 i2ctransfer -f -y 30 w3@0x40 0x03 0x18 0x5E
 
-i2ctransfer -f -y 30 w3@0x40 0x02 0xD3 0x00
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD6 0x10
 sleep 0.5
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD6 0x00
 i2ctransfer -f -y 30 w3@0x40 0x02 0xD3 0x10
-echo "[9295]: 0x102 pclk"
-i2ctransfer -f -y 30 w2@0x40 0x01 0x02 r1
-echo "[9295]: 0x2D3 sync"
-i2ctransfer -f -y 30 w2@0x40 0x02 0xD3 r1
+sleep 0.5
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD3 0x00
+
 i2ctransfer -f -y 30 w3@0x40 0x00 0x00 0x82
 
-# 9295-B
-echo "[sensors]: 9295b"
+# 9295-B/96717-B
+echo "[sensors]: serializer-b"
 i2ctransfer -f -y 30 w3@0x6b 0x00 0x06 0xF2
 
 sleep 1
@@ -102,17 +126,17 @@ i2ctransfer -f -y 30 w3@0x40 0x02 0xBE 0x10
 sleep 1
 i2ctransfer -f -y 30 w3@0x40 0x03 0x18 0x5E
 
-i2ctransfer -f -y 30 w3@0x40 0x02 0xD3 0x00
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD6 0x10
 sleep 0.5
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD6 0x00
 i2ctransfer -f -y 30 w3@0x40 0x02 0xD3 0x10
-echo "[9295]: 0x102 pclk"
-i2ctransfer -f -y 30 w2@0x40 0x01 0x02 r1
-echo "[9295]: 0x2D3 sync"
-i2ctransfer -f -y 30 w2@0x40 0x02 0xD3 r1
+sleep 0.5
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD3 0x00
+
 i2ctransfer -f -y 30 w3@0x40 0x00 0x00 0x84
 
-# 9295-C
-echo "[sensors]: 9295c"
+# 9295-C/96717-C
+echo "[sensors]: serializer-c"
 i2ctransfer -f -y 30 w3@0x6b 0x00 0x06 0xF4
 
 sleep 1
@@ -121,13 +145,17 @@ i2ctransfer -f -y 30 w3@0x40 0x02 0xBE 0x10
 sleep 1
 i2ctransfer -f -y 30 w3@0x40 0x03 0x18 0x5E
 
-i2ctransfer -f -y 30 w3@0x40 0x02 0xD6 0x00
-sleep 0.5
 i2ctransfer -f -y 30 w3@0x40 0x02 0xD6 0x10
+sleep 0.5
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD6 0x00
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD3 0x10
+sleep 0.5
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD3 0x00
+
 i2ctransfer -f -y 30 w3@0x40 0x00 0x00 0x86
 
-# 9295-D
-echo "[sensors]: 9295d"
+# 9295-D/96717-D
+echo "[sensors]: serializer-d"
 i2ctransfer -f -y 30 w3@0x6b 0x00 0x06 0xF8
 
 sleep 1
@@ -136,9 +164,13 @@ i2ctransfer -f -y 30 w3@0x40 0x02 0xBE 0x10
 sleep 1
 i2ctransfer -f -y 30 w3@0x40 0x03 0x18 0x5E
 
-i2ctransfer -f -y 30 w3@0x40 0x02 0xD6 0x00
-sleep 0.5
 i2ctransfer -f -y 30 w3@0x40 0x02 0xD6 0x10
+sleep 0.5
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD6 0x00
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD3 0x10
+sleep 0.5
+i2ctransfer -f -y 30 w3@0x40 0x02 0xD3 0x00
+
 i2ctransfer -f -y 30 w3@0x40 0x00 0x00 0x88
 
 sleep 0.5
@@ -165,7 +197,9 @@ i2ctransfer -f -y 30 w2@0x6b 0x01 0x2C r1
 echo "[96712]: 0x13E lock status"
 i2ctransfer -f -y 30 w2@0x6b 0x01 0x3E r1
 
-
-# [OX08B]: 3840, 2160
+# [OX08BC]: 3840, 2160
 # [IMX490]: 2880, 1860
-#v4l2-ctl --set-fmt-video=width=3840,height=2160 --stream-mmap --stream-count=300 -d /dev/video$1
+# [ISX031]: 1920, 1536
+#v4l2-ctl --set-fmt-video=width=3840,height=2160 --stream-mmap --stream-count=1000 -d /dev/video$1
+#v4l2-ctl --set-fmt-video=width=2880,height=1860 --stream-mmap --stream-count=1000 -d /dev/video$1
+#v4l2-ctl --set-fmt-video=width=1920,height=1536 --stream-mmap --stream-count=1000 -d /dev/video$1
