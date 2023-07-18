@@ -98,19 +98,19 @@ i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x09 0xCA 0xC0
 i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x08 0xA2 0xF0  # Eable all MIPI PHYS
 
 # DPHY[connect with orin]
-# [IMX490 & ISX031] 1.5Gbps [OX08B] 2.4Gbps
-if [ ${camera_array[key]} == sg8-ox08bc-gmsl2 ]; then
-    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x15 0x38
-    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x18 0x38
-    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1B 0x38
-    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1E 0x38
-    green_print "MIPI Speed 2.4Gbps"
-else
+# [IMX490 & OX08B] 2.4Gbps [ISX031] 1.5Gbps
+if [ ${camera_array[key]} == sg3-isx031-gmsl2 ]; then
     i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x15 0x2F
     i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x18 0x2F
     i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1B 0x2F
     i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1E 0x2F
     green_print "MIPI Speed 1.5Gbps"
+else
+    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x15 0x38
+    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x18 0x38
+    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1B 0x38
+    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1E 0x38
+    green_print "MIPI Speed 2.4Gbps"
 fi
 
 sleep 0.1
