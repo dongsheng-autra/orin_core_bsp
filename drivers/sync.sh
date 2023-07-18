@@ -15,7 +15,7 @@ echo out > /sys/class/gpio/PH.03/direction
 
 while [ true ]; do
 	echo 1 > /sys/class/gpio/PH.03/value
-	sleep 0.03
+	sleep 0.028
 	echo 0 > /sys/class/gpio/PH.03/value
-	sleep 0.02
+	sleep 0.016
 done

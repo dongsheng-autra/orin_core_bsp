@@ -106,11 +106,11 @@ if [ ${camera_array[key]} == sg3-isx031-gmsl2 ]; then
     i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1E 0x2F
     green_print "MIPI Speed 1.5Gbps"
 else
-    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x15 0x38
-    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x18 0x38
-    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1B 0x38
-    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1E 0x38
-    green_print "MIPI Speed 2.4Gbps"
+    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x15 0x37
+    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x18 0x37
+    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1B 0x37
+    i2ctransfer -f -y $I2C_SWITCH w3@0x6b 0x04 0x1E 0x37
+    green_print "MIPI Speed 2.3Gbps"
 fi
 
 sleep 0.1
