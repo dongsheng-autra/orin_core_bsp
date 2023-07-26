@@ -1,0 +1,176 @@
+
+#include <t234-common-modules/tegra234-camera-sensing.dtsi>
+#include "dt-bindings/clock/tegra234-clock.h"
+
+#define CAMERA_I2C_MUX_BUS(x) (0x1E + x)
+
+/ {
+	i2c@3180000 {
+		tca9546@70 {
+			compatible = "nxp,pca9546";
+			reg = <0x70>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			skip_mux_detect = "yes";
+			vcc-supply = <&p3737_vdd_1v8_sys>;
+			vcc-pullup-supply = <&battery_reg>;
+			force_bus_start = <CAMERA_I2C_MUX_BUS(0)>;
+
+			i2c@0 {
+				reg = <0>;
+				i2c-mux,deselect-on-exit;
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				sensing_sensors_a@1b {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_b@1c {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_c@1d {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_d@1e {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+			};
+
+			i2c@1 {
+				reg = <1>;
+				i2c-mux,deselect-on-exit;
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				sensing_sensors_e@1b {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_f@1c {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_g@1d {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_h@1e {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+			};
+
+			i2c@2 {
+				reg = <2>;
+				i2c-mux,deselect-on-exit;
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				sensing_sensors_i@1b {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_j@1c {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_k@1d {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_l@1e {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+			};
+
+			i2c@3 {
+				reg = <3>;
+				i2c-mux,deselect-on-exit;
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				sensing_sensors_m@1b {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_n@1c {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_o@1d {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+
+				sensing_sensors_p@1e {
+					status = "okay";
+					clocks = <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>,
+							 <&bpmp_clks TEGRA234_CLK_EXTPERIPH1>;
+					clock-names = "extperiph1", "pllp_grtba";
+					mclk = "extperiph1";
+				};
+			};
+		};
+	};
+};
