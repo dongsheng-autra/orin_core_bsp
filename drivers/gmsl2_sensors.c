@@ -14,6 +14,7 @@ enum {
 	GMSL2_SENSOR_MODE_2880x1860_30FPS,
 	GMSL2_SENSOR_MODE_3840x2160_30FPS,
 	GMSL2_SENSOR_MODE_1920x1536_30FPS,
+	GMSL2_SENSOR_MODE_1600x1300_30FPS,
 };
 
 static const int gmsl2_sensor_30fps[] = {
@@ -24,6 +25,7 @@ static const struct camera_common_frmfmt gmsl2_sensor_frmfmt[] = {
 	{{2880, 1860}, gmsl2_sensor_30fps, 1, 0, GMSL2_SENSOR_MODE_2880x1860_30FPS},
 	{{3840, 2160}, gmsl2_sensor_30fps, 1, 0, GMSL2_SENSOR_MODE_3840x2160_30FPS},
 	{{1920, 1536}, gmsl2_sensor_30fps, 1, 0, GMSL2_SENSOR_MODE_1920x1536_30FPS},
+	{{1600, 1300}, gmsl2_sensor_30fps, 1, 0, GMSL2_SENSOR_MODE_1600x1300_30FPS},
 };
 
 static const struct of_device_id gmsl2_sensor_of_match[] = {

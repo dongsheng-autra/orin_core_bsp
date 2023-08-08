@@ -2,7 +2,7 @@ PWD ?= $(shell pwd)
 BUILD_DIR ?= $(shell pwd)
 
 ARCH ?= arm64
-CROSS_COMPILE ?= aarch64-linux-gnu-
+CROSS_COMPILE ?= aarch64-buildroot-linux-gnu-
 
 obj-m := gmsl2_sensors.o
 
