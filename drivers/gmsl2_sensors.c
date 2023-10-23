@@ -35,7 +35,6 @@ static const struct of_device_id gmsl2_sensor_of_match[] = {
 MODULE_DEVICE_TABLE(of, gmsl2_sensor_of_match);
 
 static const u32 ctrl_cid_list[] = {
-	TEGRA_CAMERA_CID_GAIN,
 	TEGRA_CAMERA_CID_EXPOSURE,
 	TEGRA_CAMERA_CID_EXPOSURE_SHORT,
 	TEGRA_CAMERA_CID_FRAME_RATE,
@@ -222,7 +221,6 @@ static int gmsl2_sensor_set_exposure(struct tegracam_device *tc_dev, s64 val)
 static struct tegracam_ctrl_ops gmsl2_sensor_ctrl_ops = {
 	.numctrls = ARRAY_SIZE(ctrl_cid_list),
 	.ctrl_cid_list = ctrl_cid_list,
-	.set_gain = gmsl2_sensor_set_gain,
 	.set_exposure = gmsl2_sensor_set_exposure,
 	.set_exposure_short = gmsl2_sensor_set_exposure,
 	.set_frame_rate = gmsl2_sensor_set_frame_rate,
