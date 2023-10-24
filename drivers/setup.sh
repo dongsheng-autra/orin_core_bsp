@@ -11,7 +11,7 @@ sleep 0.5
 chmod 777 /sys/class/gpio/export
 chmod 777 /sys/class/gpio/unexport
 
-echo "[PWDN]: power up"
+echo "[PWDN]: power on"
 if [ -e /sys/class/gpio/PH.06 ]; then
 	echo "PH.06 has exported."
 else
@@ -33,4 +33,4 @@ fi
 
 echo out > /sys/class/gpio/PAC.07/direction
 
-echo 1 > /sys/class/gpio/PAC.07/value
+echo 0 > /sys/class/gpio/PAC.07/value

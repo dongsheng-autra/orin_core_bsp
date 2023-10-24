@@ -191,15 +191,6 @@ static int gmsl2_sensor_set_group_hold(struct tegracam_device *tc_dev, bool val)
 	return 0;
 }
 
-static int gmsl2_sensor_set_gain(struct tegracam_device *tc_dev, s64 val)
-{
-	struct device *dev = tc_dev->dev;
-
-	dev_info(dev, "[%s]: Gain control is not avilable yet.\n",  __func__);
-
-	return 0;
-}
-
 static int gmsl2_sensor_set_frame_rate(struct tegracam_device *tc_dev, s64 val)
 {
 	struct device *dev = tc_dev->dev;
