@@ -1,0 +1,12 @@
+[Unit]
+Description=Camera DMS Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/autra/camera_sdk/config.sh
+Restart=on-failure
+RestartSec=3s
+
+[Install]
+WantedBy=multi-user.target
